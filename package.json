@@ -7,5 +7,5 @@
     "dev": "npx --yes serve .",
     "start": "npx --yes serve .",
     "preview": "npx --yes serve ."
+    build: "echo 'no build needed'"
   }
-}
