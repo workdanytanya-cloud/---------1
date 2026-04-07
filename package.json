@@ -8,4 +8,6 @@
     "start": "npx --yes serve .",
     "preview": "npx --yes serve ."
     build: "echo 'no build needed'"
-  }
+  "engines": {  
+  "node": ">=24.0.0"  
+}  }
