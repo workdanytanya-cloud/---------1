@@ -1,0 +1,23 @@
+# ОС
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Редакторы и IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Логи
+*.log
+npm-debug.log*
+
+# Временные файлы
+*.tmp
+*.temp
+
+# Техническое задание (не публикуйте на GitHub при желании оставить только сайт)
+*.docx
