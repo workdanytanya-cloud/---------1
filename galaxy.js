@@ -336,6 +336,32 @@ if (burger && nav) {
   });
 }
 
+const navLinks = Array.from(document.querySelectorAll('.site-header__nav a[href^="#"]'));
+const sectionTargets = navLinks
+  .map((link) => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
+
+if (navLinks.length && sectionTargets.length && "IntersectionObserver" in window) {
+  const setActiveLink = (id) => {
+    navLinks.forEach((link) => {
+      const isActive = link.getAttribute("href") === `#${id}`;
+      link.classList.toggle("is-active", isActive);
+    });
+  };
+
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]?.target?.id) setActiveLink(visible[0].target.id);
+    },
+    { rootMargin: "-30% 0px -55% 0px", threshold: [0.2, 0.4, 0.6] },
+  );
+
+  sectionTargets.forEach((section) => sectionObserver.observe(section));
+}
+
 const revealItems = document.querySelectorAll(".reveal");
 if ("IntersectionObserver" in window && revealItems.length > 0) {
   const observer = new IntersectionObserver(
@@ -352,6 +378,31 @@ if ("IntersectionObserver" in window && revealItems.length > 0) {
   revealItems.forEach((item) => observer.observe(item));
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
+}
+
+const heroSection = document.getElementById("top");
+const profileCard = document.querySelector(".profile-card");
+const heroText = document.querySelector(".hero__text");
+const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+if (heroSection && profileCard && heroText && !reduceMotion) {
+  let ticking = false;
+  const updateParallax = () => {
+    const rect = heroSection.getBoundingClientRect();
+    const progress = Math.max(-1, Math.min(1, rect.top / window.innerHeight));
+    profileCard.style.transform = `translateY(${progress * -16}px)`;
+    heroText.style.transform = `translateY(${progress * 8}px)`;
+    ticking = false;
+  };
+
+  const onScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  updateParallax();
 }
 
 const briefForm = document.getElementById("brief-form");
@@ -377,3 +428,28 @@ if (briefForm && briefLink) {
   briefForm.addEventListener("change", updateBriefLink);
   updateBriefLink();
 }
+
+const profilePhotos = document.querySelectorAll(".js-profile-photo");
+profilePhotos.forEach((photo) => {
+  const profileCard = photo.closest(".profile-card");
+  const aboutPhoto = photo.closest(".about-photo");
+
+  const markLoaded = () => {
+    profileCard?.classList.add("is-photo-loaded");
+    aboutPhoto?.classList.add("is-photo-loaded");
+  };
+
+  const markMissing = () => {
+    profileCard?.classList.remove("is-photo-loaded");
+    aboutPhoto?.classList.remove("is-photo-loaded");
+  };
+
+  if (photo.complete && photo.naturalWidth > 0) {
+    markLoaded();
+  } else if (photo.complete && photo.naturalWidth === 0) {
+    markMissing();
+  }
+
+  photo.addEventListener("load", markLoaded);
+  photo.addEventListener("error", markMissing);
+});
