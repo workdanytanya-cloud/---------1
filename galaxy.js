@@ -309,14 +309,71 @@ if (root) {
     mouseRepulsion: true,
     mouseInteraction: true,
     density: 1,
-    glowIntensity: 0.52,
+    glowIntensity: 0.6,
     saturation: 0.1,
-    hueShift: 155,
+    hueShift: 140,
     twinkleIntensity: 0.3,
-    rotationSpeed: 0.08,
+    rotationSpeed: 0.1,
     repulsionStrength: 2,
     autoCenterRepulsion: 0,
     starSpeed: 0.4,
-    speed: 0.48,
+    speed: 0.5,
   });
+}
+
+const burger = document.querySelector(".site-header__burger");
+const nav = document.getElementById("site-nav");
+if (burger && nav) {
+  burger.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("is-open");
+    burger.setAttribute("aria-expanded", String(isOpen));
+  });
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("is-open");
+      burger.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+const revealItems = document.querySelectorAll(".reveal");
+if ("IntersectionObserver" in window && revealItems.length > 0) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 },
+  );
+  revealItems.forEach((item) => observer.observe(item));
+} else {
+  revealItems.forEach((item) => item.classList.add("is-visible"));
+}
+
+const briefForm = document.getElementById("brief-form");
+const briefLink = document.getElementById("brief-telegram-link");
+if (briefForm && briefLink) {
+  const updateBriefLink = () => {
+    const getValues = (name) =>
+      Array.from(briefForm.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
+    const need = getValues("need");
+    const goal = getValues("goal");
+    const have = getValues("have");
+    const message = [
+      "Здравствуйте! Хочу заполнить мини-бриф.",
+      `Что мне нужно: ${need.length ? need.join(", ") : "-"}`,
+      `Для чего сайт: ${goal.length ? goal.join(", ") : "-"}`,
+      `Что уже есть: ${have.length ? have.join(", ") : "-"}`,
+      "Ссылка на проект или соцсеть:",
+      "Контакт:",
+    ].join("\n");
+    briefLink.href = `https://t.me/Tanya_panova?text=${encodeURIComponent(message)}`;
+  };
+
+  briefForm.addEventListener("change", updateBriefLink);
+  updateBriefLink();
 }
