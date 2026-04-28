@@ -436,12 +436,16 @@ profilePhotos.forEach((photo) => {
 
   const markLoaded = () => {
     profileCard?.classList.add("is-photo-loaded");
+    profileCard?.classList.remove("is-photo-missing");
     aboutPhoto?.classList.add("is-photo-loaded");
+    aboutPhoto?.classList.remove("is-photo-missing");
   };
 
   const markMissing = () => {
     profileCard?.classList.remove("is-photo-loaded");
+    profileCard?.classList.add("is-photo-missing");
     aboutPhoto?.classList.remove("is-photo-loaded");
+    aboutPhoto?.classList.add("is-photo-missing");
   };
 
   if (photo.complete && photo.naturalWidth > 0) {
@@ -453,3 +457,29 @@ profilePhotos.forEach((photo) => {
   photo.addEventListener("load", markLoaded);
   photo.addEventListener("error", markMissing);
 });
+
+const projectCovers = document.querySelectorAll(".project-cover");
+const supportsFinePointer = window.matchMedia?.("(pointer: fine)")?.matches;
+if (projectCovers.length > 0 && supportsFinePointer) {
+  projectCovers.forEach((cover) => {
+    const reset = () => {
+      cover.style.setProperty("--mx", "0px");
+      cover.style.setProperty("--my", "0px");
+      cover.classList.remove("is-hovered");
+    };
+
+    cover.addEventListener("mousemove", (event) => {
+      const rect = cover.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const dx = (x / rect.width - 0.5) * 18;
+      const dy = (y / rect.height - 0.5) * 18;
+      cover.style.setProperty("--mx", `${dx}px`);
+      cover.style.setProperty("--my", `${dy}px`);
+      cover.classList.add("is-hovered");
+    });
+
+    cover.addEventListener("mouseleave", reset);
+    cover.addEventListener("blur", reset);
+  });
+}
