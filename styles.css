@@ -124,7 +124,7 @@ ul { margin: 0; padding-left: 20px; }
   margin: 4px auto;
   background: #fff;
 }
-.nav-mobile-cta { display: none; }
+.site-header .nav-mobile-cta { display: none; }
 
 .btn {
   min-height: 50px;
@@ -855,7 +855,7 @@ ul { margin: 0; padding-left: 20px; }
     align-items: flex-start;
   }
   .site-header__nav.is-open { display: flex; }
-  .nav-mobile-cta { display: inline-flex; width: 100%; margin-top: 4px; }
+  .site-header .nav-mobile-cta { display: inline-flex; width: 100%; margin-top: 4px; }
   .site-header__logo { height: 36px; }
   .hero__grid,
   .grid--2,
