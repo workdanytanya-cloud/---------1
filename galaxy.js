@@ -483,3 +483,81 @@ if (projectCovers.length > 0 && supportsFinePointer) {
     cover.addEventListener("blur", reset);
   });
 }
+
+const testimonialsStack = document.querySelector(".testimonials-stack");
+if (testimonialsStack) {
+  const cards = Array.from(testimonialsStack.querySelectorAll(".testimonial-card"));
+  const dots = Array.from(testimonialsStack.querySelectorAll(".testimonials-dot"));
+  let activeIndex = 0;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragOffsetX = 0;
+
+  const renderStack = () => {
+    const total = cards.length;
+    cards.forEach((card, index) => {
+      const order = (index - activeIndex + total) % total;
+      card.classList.toggle("is-active", order === 0);
+      if (order === 0) {
+        card.style.transform = `translateX(${dragOffsetX}px) scale(1)`;
+        card.style.opacity = "1";
+        card.style.zIndex = String(total);
+      } else if (order <= 2) {
+        const scale = 1 - order * 0.05;
+        const translateY = -order * 24;
+        card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+        card.style.opacity = String(1 - order * 0.18);
+        card.style.zIndex = String(total - order);
+      } else {
+        card.style.transform = "scale(0.9)";
+        card.style.opacity = "0";
+        card.style.zIndex = "0";
+      }
+    });
+
+    dots.forEach((dot, idx) => dot.classList.toggle("is-active", idx === activeIndex));
+  };
+
+  const goTo = (index) => {
+    activeIndex = (index + cards.length) % cards.length;
+    dragOffsetX = 0;
+    renderStack();
+  };
+
+  const onDragMove = (event) => {
+    if (!isDragging) return;
+    const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+    dragOffsetX = clientX - dragStartX;
+    renderStack();
+  };
+
+  const onDragEnd = () => {
+    if (!isDragging) return;
+    if (Math.abs(dragOffsetX) > 60) {
+      goTo(activeIndex + (dragOffsetX < 0 ? 1 : -1));
+    } else {
+      dragOffsetX = 0;
+      renderStack();
+    }
+    isDragging = false;
+  };
+
+  const activeCard = () => cards[activeIndex];
+  const onDragStart = (event) => {
+    if (event.currentTarget !== activeCard()) return;
+    isDragging = true;
+    dragStartX = "touches" in event ? event.touches[0].clientX : event.clientX;
+  };
+
+  cards.forEach((card) => {
+    card.addEventListener("mousedown", onDragStart);
+    card.addEventListener("touchstart", onDragStart, { passive: true });
+  });
+  window.addEventListener("mousemove", onDragMove, { passive: true });
+  window.addEventListener("touchmove", onDragMove, { passive: true });
+  window.addEventListener("mouseup", onDragEnd);
+  window.addEventListener("touchend", onDragEnd);
+  dots.forEach((dot, index) => dot.addEventListener("click", () => goTo(index)));
+
+  renderStack();
+}
