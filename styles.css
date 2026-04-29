@@ -365,12 +365,6 @@ ul { margin: 0; padding-left: 20px; }
 .project-cover__img--course { object-position: center 20%; }
 .project-cover__img--beauty { object-position: center 18%; }
 .project-cover__img--ermak { object-position: center 12%; }
-.project-card--featured {
-  grid-column: 1 / -1;
-}
-.project-card--featured .project-cover {
-  height: 250px;
-}
 .project-cover--real::before,
 .project-cover--real::after {
   display: none;
@@ -859,12 +853,6 @@ ul { margin: 0; padding-left: 20px; }
   .grid--3,
   .before-after,
   .about-grid { grid-template-columns: 1fr; }
-  .project-card--featured {
-    grid-column: auto;
-  }
-  .project-card--featured .project-cover {
-    height: 190px;
-  }
   .brief-form { grid-template-columns: 1fr; }
   .brief-form__item { min-height: 0; }
   .brief-form .btn { width: 100%; justify-self: stretch; }
